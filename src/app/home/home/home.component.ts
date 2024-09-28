@@ -61,7 +61,7 @@ ngOnInit() {
     console.log("ESTA LOGGEADO");
 
     this.user = this.auth.getUser();
-    console.log(this.user);
+    console.log("USER: ",this.user);
 
     if(this.user){
       this.userTipe = this.user.tipo;
@@ -70,6 +70,8 @@ ngOnInit() {
       if(this.userTipe === 'profesor'){
         this.horario = this.user.horario;
         console.log("Carga laboral: ",this.horario);
+
+
       }else if(this.userTipe === 'estudiante'){
         this.inscrito = this.user.inscrito;
         console.log("INSCRITO:", this.inscrito);

@@ -122,6 +122,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
           });
   
           setTimeout(() => {
+            const credentials = {user: respuesta, status: true};
+
+            this.authService.storeUser(credentials);
             this.autoLogin(this.userForm.value.email, this.userForm.value.password);
             Swal.close(); 
           }, 500);
