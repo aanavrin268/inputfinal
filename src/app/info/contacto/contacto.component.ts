@@ -77,6 +77,8 @@ export class ContactoComponent implements OnInit, OnDestroy {
     }
   }
 
+  
+
   checkUserSession() {
     const stored = localStorage.getItem('loged');
     if (stored) {

@@ -12,8 +12,8 @@ import { ErrorPageComponent } from './info/error-page/error-page.component';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/contacto', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent},
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'register', component: RegisterComponent },
   { path: 'professor-subjects', component: SubjectsComponent, canActivate: [AuthGuard] },

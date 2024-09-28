@@ -33,6 +33,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    /*
     if(this.authService.isAuthenticated()){
       console.log("el usuario esta loggeado");
       //this.router.navigate(['/home']); 
@@ -45,6 +46,11 @@ export class LoginComponent implements OnInit, OnDestroy {
       console.log("NOOO  esta loggeado");
       //Sczxc
     }
+
+    */
+
+    this.checkUserSession();
+
 
 
     window.addEventListener('storage', this.handleStorageChange.bind(this));
@@ -59,19 +65,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
 
-  handleStorageChange(event: StorageEvent) {
-    if (event.key === 'userSession') {
-      if (event.newValue) { // Comprobar que newValue no sea null
-        const sessionData = JSON.parse(event.newValue);
-        if (sessionData.loggedIn === false) {
-          // Cierra la sesión en la pestaña actual
-          localStorage.setItem('userSession', JSON.stringify({ loggedIn: false }));
-        }
-      }
-    }
-  }
-  
-
   onSubmit() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
@@ -84,7 +77,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
           this.authService.storeUser(credentials);
-          this.router.navigate(['/home'], { replaceUrl: true });
+
+          localStorage.setItem('loged', JSON.stringify(true));
+          this.checkUserSession(); // Verifica inmediatamente después de hacer login
+          
+          //this.router.navigate(['/home'], { replaceUrl: true });
 
           //this.router.navigate(['/home']);
           //this.location.replaceState('/home'); // Evita volver al login
@@ -102,6 +99,32 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
       
+    }
+  }
+
+  handleStorageChange(event: StorageEvent) {
+    if (event.key === 'userSession') {
+      const sessionData = JSON.parse(event.newValue || '{}');
+      if (sessionData.loggedIn === false) {
+        // Cierra la sesión en la pestaña actual
+        localStorage.setItem('userSession', JSON.stringify({ loggedIn: false }));
+        this.router.navigate(['/login']); // O redirigir a donde necesites
+      } else {
+        this.router.navigate(['/home']);
+      }
+    }
+  }
+
+
+
+  checkUserSession() {
+    const stored = localStorage.getItem('loged');
+    if (stored) {
+      const valor = JSON.parse(stored);
+      if (valor === true) {
+        localStorage.setItem('userSession', JSON.stringify({ loggedIn: true }));
+        this.router.navigate(['/home']);
+      }
     }
   }
   
