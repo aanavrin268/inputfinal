@@ -36,6 +36,10 @@ export class NavbarComponent implements OnInit, OnDestroy{
 
    ngOnInit(){
 
+
+
+
+    this.checkUserSession();
     window.addEventListener('storage', this.handleStorageChange.bind(this));
 
 
@@ -60,6 +64,21 @@ export class NavbarComponent implements OnInit, OnDestroy{
     }
 
     */
+  }
+
+  checkUserSession() {
+    const stored = localStorage.getItem('loged');
+    if (stored) {
+      const valor = JSON.parse(stored);
+      if (valor === true) {
+        localStorage.setItem('userSession', JSON.stringify({ loggedIn: true }));
+        //this.router.navigate(['/error404']);
+        this.isLoggedIn = true;
+      }else {
+        this.isLoggedIn = false;
+
+      }
+    }
   }
 
 

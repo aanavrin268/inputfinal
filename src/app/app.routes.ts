@@ -22,4 +22,6 @@ export const routes: Routes = [
   { path: 'student-carga', component: CargamateriasComponent, canActivate: [AuthGuard] },
   { path: 'contacto', component: ContactoComponent },
   { path: 'error404', component: ErrorPageComponent},
+  { path: '**', redirectTo: '/home'}
+
 ];
