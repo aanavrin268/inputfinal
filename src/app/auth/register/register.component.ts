@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
@@ -18,20 +18,60 @@ import { AuthService } from '../auth.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'] // Asegúrate de que sea styleUrls
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   public userForm!: FormGroup;
 
   constructor(private fb: FormBuilder, private userService: RegisterUserService, private router: Router,
     private authService: AuthService
   ) {}
+  ngOnDestroy(): void {
+    window.removeEventListener('storage', this.handleStorageChange.bind(this));
+
+  }
 
   ngOnInit(): void {
+
+    this.checkUserSession();
+
+
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       tipo: ['', [Validators.required, this.tipoValidator]], // Corrige aquí
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(3)]]
     });
+
+
+    window.addEventListener('storage', this.handleStorageChange.bind(this));
+
+
+  }
+
+
+  checkUserSession() {
+    const stored = localStorage.getItem('loged');
+    if (stored) {
+      const valor = JSON.parse(stored);
+      if (valor === true) {
+        localStorage.setItem('userSession', JSON.stringify({ loggedIn: true }));
+        this.router.navigate(['/home']);
+      }
+    }
+  }
+  
+
+
+  handleStorageChange(event: StorageEvent) {
+    if (event.key === 'userSession') {
+      const sessionData = JSON.parse(event.newValue || '{}');
+      if (sessionData.loggedIn === false) {
+        // Cierra la sesión en la pestaña actual
+        localStorage.setItem('userSession', JSON.stringify({ loggedIn: false }));
+        this.router.navigate(['/login']); // O redirigir a donde necesites
+      } else {
+        this.router.navigate(['/home']);
+      }
+    }
   }
 
 
@@ -44,9 +84,11 @@ export class RegisterComponent implements OnInit {
         const loginTime = new Date().getTime();
         localStorage.setItem('loginTime', loginTime.toString());
 
+        localStorage.setItem('loged', JSON.stringify(true));
+        this.checkUserSession(); // Verifica inmediatamente después de ha
 
-        this.authService.storeUser(data.user);
-        this.router.navigate(['/home']);
+        //this.authService.storeUser(data.user);
+        //this.router.navigate(['/home']);
       },
       error: () => {
         Swal.fire({
@@ -80,9 +122,12 @@ export class RegisterComponent implements OnInit {
           });
   
           setTimeout(() => {
+            const credentials = {user: respuesta, status: true};
+
+            this.authService.storeUser(credentials);
             this.autoLogin(this.userForm.value.email, this.userForm.value.password);
             Swal.close(); 
-          }, 1000);
+          }, 500);
         },
         (error) => {
           console.error('Error al crear usuario:', error);

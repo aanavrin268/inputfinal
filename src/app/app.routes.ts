@@ -13,7 +13,7 @@ import { ErrorPageComponent } from './info/error-page/error-page.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
+  { path: 'home', component: HomeComponent},
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'register', component: RegisterComponent },
   { path: 'professor-subjects', component: SubjectsComponent, canActivate: [AuthGuard] },
@@ -22,4 +22,6 @@ export const routes: Routes = [
   { path: 'student-carga', component: CargamateriasComponent, canActivate: [AuthGuard] },
   { path: 'contacto', component: ContactoComponent },
   { path: 'error404', component: ErrorPageComponent},
+  { path: '**', redirectTo: '/home'}
+
 ];
