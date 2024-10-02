@@ -12,7 +12,7 @@ import { ErrorPageComponent } from './info/error-page/error-page.component';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/contacto', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'register', component: RegisterComponent },
